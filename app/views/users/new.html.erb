@@ -1,0 +1,1 @@
+<%= link_to "Login with Spotify", "https://accounts.spotify.com/authorize?client_id=#{ENV["SPOTIFY_KEY"]}&response_type=code&redirect_uri=http://localhost:3000/auth&scope=user-read-private user-read-email playlist-modify-public playlist-read-collaborative playlist-read-private playlist-modify-private" %>
