@@ -2,9 +2,9 @@ class User < ApplicationRecord
   has_many :spotify_source_playlists, dependent: :destroy
   has_many :songs, dependent: :destroy
 
-  def make_playlist(songs, year, token){
+  def make_playlist(songs, year, token)
 
-  }
+  end
 
   def self.get_access_token(code)
     token = Base64.strict_encode64(ENV["SPOTIFY_KEY"] + ":" + ENV["SPOTIFY_SECRET"])
