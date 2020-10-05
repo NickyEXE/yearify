@@ -10,15 +10,46 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_02_223239) do
+ActiveRecord::Schema.define(version: 2020_10_03_213526) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "songs", force: :cascade do |t|
+    t.datetime "release_date"
+    t.string "artist"
+    t.string "album"
+    t.string "uri"
+    t.string "spotify_id"
+    t.bigint "spotify_source_playlist_id", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["spotify_source_playlist_id"], name: "index_songs_on_spotify_source_playlist_id"
+    t.index ["user_id"], name: "index_songs_on_user_id"
+  end
+
+  create_table "spotify_source_playlists", force: :cascade do |t|
+    t.string "name"
+    t.string "uri"
+    t.string "spotify_id"
+    t.string "description"
+    t.string "tracks_url"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_spotify_source_playlists_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "display_name"
+    t.string "uri"
   end
 
+  add_foreign_key "songs", "spotify_source_playlists"
+  add_foreign_key "songs", "users"
+  add_foreign_key "spotify_source_playlists", "users"
 end
