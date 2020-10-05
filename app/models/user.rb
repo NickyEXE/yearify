@@ -3,7 +3,14 @@ class User < ApplicationRecord
   has_many :songs, dependent: :destroy
 
   def make_playlist(songs, year, token)
-
+    response = JSON.parse(`curl -X POST \
+    https://api.spotify.com/v1/users/#{self.spotify_id}/playlists \
+    -H 'Accept: */*' \
+    -H 'Authorization: Bearer #{token}' \
+    -H 'Content-Type: application/json' \
+    -d '{"name":"All Your Songs From #{year}", "public":false}'
+    `)
+    DestinationPlaylist.create_from_response(response, year, self)
   end
 
   def self.get_access_token(code)
@@ -22,6 +29,7 @@ class User < ApplicationRecord
     user = User.find_or_create_by(email: user_data['email']) do |u|
       u.display_name = user_data['display_name']
       u.uri = user_data['uri']
+      u.spotify_id = user_data['id']
     end
     return user
   end
