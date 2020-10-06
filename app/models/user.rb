@@ -14,6 +14,17 @@ class User < ApplicationRecord
     DestinationPlaylist.create_from_response(response, year, self)
   end
 
+  def get_all_songs
+    token = get_new_token
+    spotify_source_playlists.each{|p| p.get_songs(token)}
+  end
+
+  def get_new_token
+    token = Base64.strict_encode64(ENV["SPOTIFY_KEY"] + ":" + ENV["SPOTIFY_SECRET"])
+    response = JSON.parse(`curl -H "Authorization: Basic #{token}" -d grant_type=refresh_token -d refresh_token=#{self.refresh_token} https://accounts.spotify.com/api/token`)
+    return response["access_token"]
+  end
+
   def self.get_access_token(code)
     token = Base64.strict_encode64(ENV["SPOTIFY_KEY"] + ":" + ENV["SPOTIFY_SECRET"])
     response = JSON.parse(`curl -X POST \
@@ -22,15 +33,16 @@ class User < ApplicationRecord
     -H 'Authorization: Basic #{token}' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
     -d 'code=#{code}&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth'`)
-    return response['access_token']
+    return response
   end
 
-  def self.create_from_access_token(access_token)
-    user_data = JSON.parse(`curl -H "Authorization: Bearer #{access_token}" https://api.spotify.com/v1/me`)
+  def self.create_from_access_token(access_hash)
+    user_data = JSON.parse(`curl -H "Authorization: Bearer #{access_hash['access_token']}" https://api.spotify.com/v1/me`)
     user = User.find_or_create_by(email: user_data['email']) do |u|
       u.display_name = user_data['display_name']
       u.uri = user_data['uri']
       u.spotify_id = user_data['id']
+      u.refresh_token = access_hash["refresh_token"]
     end
     return user
   end

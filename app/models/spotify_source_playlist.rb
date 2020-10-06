@@ -23,14 +23,25 @@ class SpotifySourcePlaylist < ApplicationRecord
         if track["album"]["release_date"]
           date_array = track["album"]["release_date"].split("-")
           s.release_date = DateTime.new(date_array[0].to_i)
-        else
-          puts "date_array does not exist"
         end
         s.artist = track["artists"][0]["name"]
         s.album = track["album"]["name"]
         s.uri = track["uri"]
         s.user = user
       end
+    end
+  end
+
+  def self.grab_all_playlists(user)
+    token = user.get_new_token
+    first_playlists = get_by_token_and_offset(token, 0)
+    create_playlists(first_playlists, user)
+    total_playlists = first_playlists["total"]
+    i = 50
+    while i < total_playlists do
+      playlists = get_by_token_and_offset(token, i)
+      create_playlists(playlists, user)
+      i = i + 50
     end
   end
 
@@ -52,15 +63,4 @@ class SpotifySourcePlaylist < ApplicationRecord
     end
   end
 
-  def self.grab_all_playlists(user, token)
-    first_playlists = get_by_token_and_offset(token, 0)
-    create_playlists(first_playlists, user)
-    total_playlists = first_playlists["total"]
-    i = 50
-    while i < total_playlists do
-      playlists = get_by_token_and_offset(token, i)
-      create_playlists(playlists, user)
-      i = i + 50
-    end
-  end
 end

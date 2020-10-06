@@ -5,13 +5,13 @@ class UsersController < ApplicationController
   end
 
   def auth
-    token = User.get_access_token(params[:code])
-    user = User.create_from_access_token(token)
+    access_hash = User.get_access_token(params[:code])
+    token = access_hash['access_token']
+    user = User.create_from_access_token(access_hash)
     render 'auth'
-    # byebug
-    SpotifySourcePlaylist.grab_all_playlists(user, token)
-    user.spotify_source_playlists.each{|p| p.get_songs(token)}
-    DestinationPlaylist.create_user_playlists(user, token)
+    SpotifySourcePlaylist.grab_all_playlists(user)
+    user.get_all_songs
+    DestinationPlaylist.create_user_playlists(user)
     puts "hello"
   end
 end
