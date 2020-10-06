@@ -19,7 +19,7 @@ class SpotifySourcePlaylist < ApplicationRecord
   def save_songs(res)
     res["items"].each do |item|
       track = item["track"]
-      Song.find_or_create_by(spotify_id: track["id"], spotify_source_playlist: self) do |s|
+      Song.find_or_create_by(spotify_id: track["id"], user: user) do |s|
         if track["album"]["release_date"]
           date_array = track["album"]["release_date"].split("-")
           s.release_date = DateTime.new(date_array[0].to_i)

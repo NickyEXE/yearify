@@ -6,4 +6,8 @@ class DestinationPlaylistsController < ApplicationController
     redirect_to @current_user
   end
 
+  def destroy_all
+    @current_user.unfollow_all_playlists
+  end
+
 end

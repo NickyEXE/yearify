@@ -10,6 +10,5 @@ class SessionsController < ApplicationController
     user = User.create_from_access_token(access_hash)
     session[:id] = user.id
     redirect_to user
-    puts "hello"
   end
 end

@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  resources :destination_playlists, only: [:create, :destroy]
+  resources :destination_playlists, only: [:create]
+  delete '/destination_playlists', to: 'destination_playlists#destroy_all'
   resources :sessions, only: [:new, :destroy]
   resources :users, only: [:show]
   get '/auth', to: "sessions#create"
