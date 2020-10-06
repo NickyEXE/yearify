@@ -1,6 +1,25 @@
 class DestinationPlaylist < ApplicationRecord
   belongs_to :user
 
+  def add_songs(songs, token)
+    i = 0
+    while songs.length > i do
+      body = {"uris": songs.slice(i, 100).map{|song| song.uri}}.to_json
+      response = `curl -i -X POST \
+      https://api.spotify.com/v1/playlists/#{spotify_id}/tracks \
+      -H "Authorization: Bearer #{token}" \
+      -H "Accept: application/json" \
+      -H 'Content-Type: application/json' \
+      -d '#{body}'
+      `
+      i = i + 100
+    end
+  end
+
+  def unfollow_playlist(token)
+    `curl -X DELETE "https://api.spotify.com/v1/playlists/#{spotify_id}/followers" -H "Authorization: Bearer #{token}"`
+  end
+
   def self.create_from_response(response, year, user)
     find_or_create_by(spotify_id: response["id"]) do |p|
       p.name = response["name"]
@@ -12,18 +31,12 @@ class DestinationPlaylist < ApplicationRecord
     end
   end
 
-  def add_songs(songs, token)
-    body = {"uris": songs.map{|song| song.uri}}.to_json
-    response = `curl -i -X POST \
-    https://api.spotify.com/v1/playlists/#{spotify_id}/tracks \
-    -H "Authorization: Bearer #{token}" \
-    -H "Accept: application/json" \
-    -H 'Content-Type: application/json' \
-    -d '#{body}'
-    `
+  def self.create_user_playlists(user, token)
+    grouped_by_year = Song.by_year(user.songs)
+    grouped_by_year.keys.each do |year|
+      playlist = user.make_playlist(grouped_by_year[year], year, token)
+      playlist.add_songs(grouped_by_year[year], token)
+    end
   end
 
-  def destroy_playlist(token)
-    `curl -X DELETE "https://api.spotify.com/v1/playlists/#{spotify_id}/followers" -H "Authorization: Bearer #{token}"`
-  end
 end
