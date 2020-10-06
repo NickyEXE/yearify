@@ -18,10 +18,7 @@ class DestinationPlaylist < ApplicationRecord
 
   def unfollow_playlist(token)
     `curl -X DELETE "https://api.spotify.com/v1/playlists/#{spotify_id}/followers" -H "Authorization: Bearer #{token}"`
-  end
-
-  def self.unfollow_all_playlists(user, token)
-    user.destination_playlists.each{|p| p.unfollow_playlist(token)}
+    self.destroy
   end
 
   def self.create_from_response(response, year, user)

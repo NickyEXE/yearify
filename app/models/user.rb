@@ -19,6 +19,11 @@ class User < ApplicationRecord
     spotify_source_playlists.each{|p| p.get_songs(token)}
   end
 
+  def unfollow_all_playlists
+    token = get_new_token
+    destination_playlists.each{|p| p.unfollow_playlist(token)}
+  end
+
   def get_new_token
     token = Base64.strict_encode64(ENV["SPOTIFY_KEY"] + ":" + ENV["SPOTIFY_SECRET"])
     response = JSON.parse(`curl -H "Authorization: Basic #{token}" -d grant_type=refresh_token -d refresh_token=#{self.refresh_token} https://accounts.spotify.com/api/token`)
