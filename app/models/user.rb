@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_many :spotify_source_playlists, dependent: :destroy
+  has_many :destination_playlists, dependent: :destroy
   has_many :songs, dependent: :destroy
 
   def make_playlist(songs, year, token)

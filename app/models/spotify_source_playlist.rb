@@ -22,9 +22,9 @@ class SpotifySourcePlaylist < ApplicationRecord
       Song.find_or_create_by(spotify_id: track["id"], spotify_source_playlist: self) do |s|
         if track["album"]["release_date"]
           date_array = track["album"]["release_date"].split("-")
-          if (date_array.length > 2)
-            s.release_date = DateTime.new(date_array[0].to_i, date_array[1].to_i, date_array[2].to_i)
-          end
+          s.release_date = DateTime.new(date_array[0].to_i)
+        else
+          puts "date_array does not exist"
         end
         s.artist = track["artists"][0]["name"]
         s.album = track["album"]["name"]
