@@ -1,7 +1,11 @@
+<%= button_to "Logout", sessions_path, method: 'delete' %>
 <h1>Hi <%= @current_user.display_name %></h1>
+
+<p>You currently have <%= @current_user.destination_playlists.count %> generated playlists and <%= @current_user.songs.count %> songs.</p>
 <ul>
-  <li><%= link_to "Generate Spotify Playlists for Every Year's Worth of Music", destination_playlists_path, method: 'post' %></li>
   <% if (@current_user.destination_playlists.length > 0) %>
     <li><%= link_to "Destroy All Previously Generated Playlists", destination_playlists_path, method: 'delete' %></li>
+  <% else %>
+  <li><%= link_to "Generate Spotify Playlists for Every Year's Worth of Music", destination_playlists_path, method: 'post' %></li>
   <% end %>
 </ul>
