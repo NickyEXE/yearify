@@ -4,9 +4,11 @@ class User < ApplicationRecord
   has_many :songs, dependent: :destroy
 
   def generate_all_playlists
-    SpotifySourcePlaylist.grab_all_playlists(self)
-    get_all_songs
-    DestinationPlaylist.create_user_playlists(self)
+    unless user.destination_playlists.length > 0
+      SpotifySourcePlaylist.grab_all_playlists(self)
+      get_all_songs
+      DestinationPlaylist.create_user_playlists(self)
+    end
   end
 
   def get_all_songs
