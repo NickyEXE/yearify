@@ -42,7 +42,11 @@ class SpotifySourcePlaylist < ApplicationRecord
     total_playlists = first_playlists["total"]
     i = 20
     while i < total_playlists do
+      puts "token:"
+      puts token
       playlists = get_by_token_and_offset(token, i)
+      puts "playlists on line 47:"
+      puts playlists
       create_playlists(playlists, user)
       i = i + 20
     end
