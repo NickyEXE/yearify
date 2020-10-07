@@ -46,7 +46,7 @@ class User < ApplicationRecord
     -H 'Accept: */*' \
     -H 'Authorization: Basic #{token}' \
     -H 'Content-Type: application/x-www-form-urlencoded' \
-    -d 'code=#{code}&grant_type=authorization_code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fauth'`)
+    -d 'code=#{code}&grant_type=authorization_code&redirect_uri=#{ENV['ROOT']}auth/'`)
     return response
   end
 
