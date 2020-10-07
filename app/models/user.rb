@@ -2,6 +2,7 @@ class User < ApplicationRecord
   has_many :spotify_source_playlists, dependent: :destroy
   has_many :destination_playlists, dependent: :destroy
   has_many :songs, dependent: :destroy
+  validates :email, presence: true
 
   def generate_all_playlists
     unless destination_playlists.length > 0
