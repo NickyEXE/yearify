@@ -1,5 +1,22 @@
 class SpotifySourcePlaylist < ApplicationRecord
   belongs_to :user
+  has_many :songs
+
+
+  def get_self
+    SpotifyApi.get(user, "/playlists/#{spotify_id}")
+  end
+
+  def get_tracks
+    SpotifyApi.get(user, "/playlists/#{spotify_id}/tracks")
+  end
+
+  def get_songs_without_token
+    get_songs(user.get_new_token)
+  end
+
+
+  # Token-Dependent
 
   def get_songs(token)
     total_songs = fetch_songs(token, 0)
@@ -27,6 +44,7 @@ class SpotifySourcePlaylist < ApplicationRecord
           end
           s.artist = track["artists"][0]["name"]
           s.album = track["album"]["name"]
+          s.album_type = track["album"]["album_type"]
           s.uri = track["uri"]
           s.user = user
           s.spotify_source_playlist = self
@@ -67,5 +85,6 @@ class SpotifySourcePlaylist < ApplicationRecord
       p.user = user
     end
   end
+
 
 end
