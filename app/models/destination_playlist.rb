@@ -3,6 +3,7 @@ class DestinationPlaylist < ApplicationRecord
 
   def add_songs(songs, token)
     i = 0
+    songs = songs.not_compilation
     while songs.length > i do
       body = {"uris": songs.slice(i, 100).map{|song| song.uri}}.to_json
       response = `curl -i -X POST \
