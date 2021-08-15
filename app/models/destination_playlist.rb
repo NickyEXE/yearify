@@ -3,7 +3,7 @@ class DestinationPlaylist < ApplicationRecord
 
   def add_songs(songs, token)
     i = 0
-    songs = songs.not_compilation
+    songs = songs
     while songs.length > i do
       body = {"uris": songs.slice(i, 100).map{|song| song.uri}}.to_json
       response = `curl -i -X POST \
@@ -35,7 +35,7 @@ class DestinationPlaylist < ApplicationRecord
 
   def self.create_user_playlists(user)
     token = user.get_new_token
-    grouped_by_year = Song.by_year(user.songs)
+    grouped_by_year = Song.by_year(user.songs.not_compilation)
     years = grouped_by_year.keys.select{|key| key != "not_sorted"}.sort_by{|a, b| b.to_i - a.to_i}
     years.each do |year|
       playlist = user.make_playlist(grouped_by_year[year], year, token)
