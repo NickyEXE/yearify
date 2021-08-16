@@ -28,9 +28,13 @@ class SpotifySourcePlaylist < ApplicationRecord
   end
 
   def fetch_songs(token, offset)
-    res = JSON.parse(`curl -H "Authorization: Bearer #{token}" https://api.spotify.com/v1/playlists/#{spotify_id}/tracks?offset=#{offset}`)
-    save_songs(res)
-    return res["total"]
+    res = SpotifyApi.get_with_token(token, "/playlists/#{spotify_id}/tracks?offset=#{offset}`")
+    if res
+      save_songs(res)
+      return res["total"]
+    else
+      return 0
+    end
   end
 
   def save_songs(res)
@@ -67,9 +71,7 @@ class SpotifySourcePlaylist < ApplicationRecord
   end
 
   def self.get_by_token_and_offset(token, offset)
-    route = "https://api.spotify.com/v1/me/playlists?offset=#{offset}"
-    response = JSON.parse(`curl -H "Authorization: Bearer #{token}" #{route}`)
-    return response
+    SpotifyApi.get_with_token(token, "/me/playlists?offset=#{offset}")
   end
 
   def self.create_playlists(playlists, user)
