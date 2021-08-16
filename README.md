@@ -13,6 +13,8 @@ Next steps include:
 * Incorporate batch insertion of songs into SQL database through the ORM
 * Develop asynchronous solution so we don't have to wait for network requests to complete to move onto the next network request to substantially decrease runtime
 
+* Abstract spotify calls
+
 ## To set up on your local machine
 
 This app requires you to have an API Key and Secret from Spotify, and to set up a `.env` file in the root of your directory with the following information:
