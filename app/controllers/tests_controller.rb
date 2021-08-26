@@ -6,4 +6,9 @@ class TestsController < ApplicationController
     redirect_to @current_user
   end
 
+  def songs
+    Song::InitializeWorker.perform_async(user.id)
+    redirect_to @current_user
+  end
+
 end
