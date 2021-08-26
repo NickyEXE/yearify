@@ -15,7 +15,7 @@ class User < ApplicationRecord
   def get_all_songs
     token = get_new_token
     spotify_source_playlists.each{|p| p.get_songs(token)}
-    DestinationPlaylist::InitializeWorker.perform_async(self.id)
+    DestinationPlaylist::InitializeWorker.perform_in(15.minutes, self.id)
   end
 
   def unfollow_all_playlists

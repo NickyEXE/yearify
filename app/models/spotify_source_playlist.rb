@@ -72,7 +72,7 @@ class SpotifySourcePlaylist < ApplicationRecord
       SourcePlaylist::ImportWorker.perform_async(token, offset, user.id)
       offset = offset + 20
     end
-    Song::InitializeWorker.perform_async(user.id)
+    Song::InitializeWorker.perform_in(5.minutes, user.id)
   end
 
   def self.get_by_token_and_offset(token, offset)
