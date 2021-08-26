@@ -33,7 +33,8 @@ class DestinationPlaylist < ApplicationRecord
     end
   end
 
-  def self.create_user_playlists(user)
+  def self.create_user_playlists(user_id)
+    user = User.find(user_id)
     token = user.get_new_token
     grouped_by_year = Song.by_year(user.songs.not_compilation)
     years = grouped_by_year.keys.select{|key| key != "not_sorted"}.sort_by{|a, b| b.to_i - a.to_i}
