@@ -8,13 +8,14 @@ class User < ApplicationRecord
     unless destination_playlists.length > 0
       SpotifySourcePlaylist.grab_all_playlists(self)
       # get_all_songs
-      # DestinationPlaylist.create_user_playlists(self)
+      # DestinationPlaylist.create_user_playlists(self.id)
     end
   end
 
   def get_all_songs
     token = get_new_token
     spotify_source_playlists.each{|p| p.get_songs(token)}
+    DestinationPlaylist::InitializeWorker.perform_async(self.id)
   end
 
   def unfollow_all_playlists
@@ -22,7 +23,7 @@ class User < ApplicationRecord
     destination_playlists.each{|p| p.unfollow_playlist(token)}
   end
 
-  def make_playlist(songs, year, token)
+  def make_playlist(year, token)
     response = JSON.parse(`curl -X POST \
     https://api.spotify.com/v1/users/#{self.spotify_id}/playlists \
     -H 'Accept: */*' \
