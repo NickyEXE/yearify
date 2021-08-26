@@ -7,8 +7,8 @@ class User < ApplicationRecord
   def generate_all_playlists
     unless destination_playlists.length > 0
       SpotifySourcePlaylist.grab_all_playlists(self)
-      get_all_songs
-      DestinationPlaylist.create_user_playlists(self)
+      # get_all_songs
+      # DestinationPlaylist.create_user_playlists(self)
     end
   end
 
