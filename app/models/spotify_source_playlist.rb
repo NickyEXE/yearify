@@ -64,9 +64,9 @@ class SpotifySourcePlaylist < ApplicationRecord
     total_playlists = first_playlists["total"]
     i = 20
     while i < total_playlists do
-      playlists = get_by_token_and_offset(token, i)
-      create_playlists(playlists, user)
-      # SourcePlaylist::ImportWorker.perform_async(token, i, user.id)
+      # playlists = get_by_token_and_offset(token, i)
+      # create_playlists(playlists, user)
+      SourcePlaylist::ImportWorker.perform_async(token, i, user.id)
       i = i + 20
     end
   end
@@ -90,10 +90,10 @@ class SpotifySourcePlaylist < ApplicationRecord
   end
 
   def self.create_playlists_with_id(playlists, user_id)
-    return playlists["items"].map{|p| create_from_spotify(p, user_id)}
+    return playlists["items"].map{|p| create_from_spotify_with_id(p, user_id)}
   end
 
-  def self.create_from_spotify_with_id(spotify_playlist, user)
+  def self.create_from_spotify_with_id(spotify_playlist, user_id)
     find_or_create_by(spotify_id: spotify_playlist["id"]) do |p|
       p.name = spotify_playlist["name"]
       p.uri = spotify_playlist["uri"]

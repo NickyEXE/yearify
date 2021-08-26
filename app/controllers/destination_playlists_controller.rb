@@ -15,4 +15,8 @@ class DestinationPlaylistsController < ApplicationController
     redirect_to @current_user
   end
 
+  def test_source_playlists
+    SpotifySourcePlaylist.get_all_playlists(@current_user)
+  end
+
 end
