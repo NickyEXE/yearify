@@ -58,6 +58,8 @@ class SpotifySourcePlaylist < ApplicationRecord
   end
 
   def self.grab_all_playlists(user)
+    # Make one non-asynchronous requests to get the whole count of playlists and first 20 playlists,
+    # then generate asynchronous requests for each subsequent set of 20 playlists.
     token = user.get_new_token
     first_playlists = get_by_token_and_offset(token, 0)
     create_playlists(first_playlists, user)
