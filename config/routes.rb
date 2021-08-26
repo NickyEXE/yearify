@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :destination_playlists, only: [:create]
   resources :sessions, only: [:new]
   resources :users, only: [:show]
+  resources :tests, only: [:index]
   get '/test_source_playlists', to: 'tests#source_playlists', as: "test_source_playlists"
   get '/test_songs', to: 'tests#songs', as: "test_songs"
   get '/test_destination_playlists', to: 'tests#destination_playlists', as: "test_destination_playlists"
