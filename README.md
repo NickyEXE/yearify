@@ -23,3 +23,19 @@ SPOTIFY_KEY=<YOUR KEY>
 SPOTIFY_SECRET=<YOUR SECRET>
 ROOT=http://localhost:3000/
 ```
+
+## Sidekiq
+
+This app requires redis to be installed and running on your computer to run in development mode.
+
+With Homebrew:
+`brew install redis`
+`brew services start redis`
+
+## Starting the App in Development Mode
+
+Start sidekiq by running:
+`bundle exec sidekiq`
+
+Start rails with:
+`rails s`

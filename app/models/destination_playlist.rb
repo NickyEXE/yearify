@@ -37,6 +37,7 @@ class DestinationPlaylist < ApplicationRecord
     token = user.get_new_token
     grouped_by_year = Song.by_year(user.songs.not_compilation)
     years = grouped_by_year.keys.select{|key| key != "not_sorted"}.sort_by{|a, b| b.to_i - a.to_i}
+    byebug
     years.each do |year|
       playlist = user.make_playlist(grouped_by_year[year], year, token)
       playlist.add_songs(grouped_by_year[year], token)
