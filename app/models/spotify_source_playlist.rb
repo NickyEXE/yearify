@@ -28,7 +28,7 @@ class SpotifySourcePlaylist < ApplicationRecord
   end
 
   def fetch_songs(token, offset)
-    res = SpotifyApi.get_with_token(token, "/playlists/#{spotify_id}/tracks?offset=#{offset}`")
+    res = SpotifyApi.get_with_token(token, "/playlists/#{spotify_id}/tracks?offset=#{offset}")
     if res
       save_songs(res)
       return res["total"]
