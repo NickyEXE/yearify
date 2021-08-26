@@ -39,8 +39,7 @@ class DestinationPlaylist < ApplicationRecord
     grouped_by_year = Song.by_year(user.songs.not_compilation)
     years = grouped_by_year.keys.select{|key| key != "not_sorted"}.sort_by{|a, b| b.to_i - a.to_i}
     years.each do |year|
-      playlist = user.make_playlist(year, token)
-      playlist.add_songs(grouped_by_year[year], token)
+      DestinationPlaylist::CreateWorker.perform_async(user.id, token, year)
     end
   end
 
