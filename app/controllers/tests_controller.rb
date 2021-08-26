@@ -11,4 +11,9 @@ class TestsController < ApplicationController
     redirect_to @current_user
   end
 
+  def destination_playlists
+    DestinationPlaylist::InitializeWorker.perform_async(@current_user.id)
+    redirect_to @current_user
+  end
+
 end
