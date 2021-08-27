@@ -4,6 +4,11 @@ class User < ApplicationRecord
   has_many :songs, dependent: :destroy
   validates :email, presence: true
 
+  def all_songs_imported?
+    self.spotify_source_playlists.where("needed_requests != total_requests").size == 0
+  end
+
+
   def generate_all_playlists
     unless destination_playlists.length > 0
       SpotifySourcePlaylist.grab_all_playlists(self)
@@ -15,7 +20,7 @@ class User < ApplicationRecord
   def get_all_songs
     token = get_new_token
     spotify_source_playlists.each{|p| p.get_songs(token)}
-    DestinationPlaylist::InitializeWorker.perform_in(15.minutes, self.id)
+    DestinationPlaylist::InitializeWorker.perform_async(self.id)
   end
 
   def unfollow_all_playlists
