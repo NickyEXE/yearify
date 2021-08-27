@@ -74,12 +74,12 @@ class SpotifySourcePlaylist < ApplicationRecord
   end
 
   def self.create_from_spotify(spotify_playlist, user_id)
-    find_or_create_by(spotify_id: spotify_playlist["id"]) do |p|
+    find_or_create_by(spotify_id: spotify_playlist["id"], user_id: user_id) do |p|
       p.name = spotify_playlist["name"]
       p.uri = spotify_playlist["uri"]
       p.description = spotify_playlist["description"]
       p.tracks_url = spotify_playlist["tracks"]["href"]
-      p.user_id = user_id
+      # p.user_id = user_id
     end
   end
 

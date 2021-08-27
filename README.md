@@ -17,6 +17,8 @@ Next steps include:
     * Think on this a lil more
     * This doesn't work because we're finding or creating songs.
     * Just keep a counter of number of fetch calls completed and expected calls completed
+    * https://www.honeybadger.io/blog/activerecord-update-counters-race-conditions/
+    * https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
 * Abstract spotify calls
 * Refactor a buncha this and rethink placement of some methods this can be p hard to navigate esp with the chaining.
 
