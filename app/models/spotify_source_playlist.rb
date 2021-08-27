@@ -2,7 +2,6 @@ class SpotifySourcePlaylist < ApplicationRecord
   belongs_to :user
   has_many :songs
 
-
   def get_self
     SpotifyApi.get(user, "/playlists/#{spotify_id}")
   end
@@ -15,16 +14,10 @@ class SpotifySourcePlaylist < ApplicationRecord
     get_songs(user.get_new_token)
   end
 
-
   # Token-Dependent
 
   def get_songs(token)
-    total_songs = fetch_songs(token, 0)
-    i = 100
-    while i < total_songs do
-      fetch_songs(token, i)
-      i = i + 100
-    end
+    SourcePlaylist::SongsWorker.perform_async(self.id, token, 0)
   end
 
   def fetch_songs(token, offset)
@@ -38,6 +31,7 @@ class SpotifySourcePlaylist < ApplicationRecord
   end
 
   def save_songs(res)
+    SourcePlaylist::IncrementRequestsWorker.perform_async(self.id, res["total"])
     res["items"] && res["items"].each do |item|
       track = item["track"]
       unless !track
@@ -58,35 +52,39 @@ class SpotifySourcePlaylist < ApplicationRecord
   end
 
   def self.grab_all_playlists(user)
+    # Make one non-asynchronous requests to get the whole count of playlists and first 20 playlists,
+    # then generate asynchronous requests for each subsequent set of 20 playlists.
     token = user.get_new_token
     first_playlists = get_by_token_and_offset(token, 0)
+    # you can remove this create_playlists I think?
+    # We make one extraneous request, but starting the offset at 20 below led to 20 missing playlists so something is going wrong here.
     create_playlists(first_playlists, user)
     total_playlists = first_playlists["total"]
-    i = 20
-    while i < total_playlists do
-      playlists = get_by_token_and_offset(token, i)
-      create_playlists(playlists, user)
-      i = i + 20
+    offset = 0
+    while offset <= total_playlists do
+      SourcePlaylist::ImportWorker.perform_async(token, offset, user.id)
+      offset = offset + 20
     end
+    # update to make wait for total_playlists to match
+    Song::InitializeWorker.perform_async(user.id, total_playlists)
   end
 
   def self.get_by_token_and_offset(token, offset)
     SpotifyApi.get_with_token(token, "/me/playlists?offset=#{offset}")
   end
 
-  def self.create_playlists(playlists, user)
-    return playlists["items"].map{|p| create_from_spotify(p, user)}
+  def self.create_playlists(playlists, user_id)
+    return playlists["items"].map{|p| create_from_spotify(p, user_id)}
   end
 
-  def self.create_from_spotify(spotify_playlist, user)
-    find_or_create_by(spotify_id: spotify_playlist["id"]) do |p|
+  def self.create_from_spotify(spotify_playlist, user_id)
+    find_or_create_by(spotify_id: spotify_playlist["id"], user_id: user_id) do |p|
       p.name = spotify_playlist["name"]
       p.uri = spotify_playlist["uri"]
       p.description = spotify_playlist["description"]
       p.tracks_url = spotify_playlist["tracks"]["href"]
-      p.user = user
+      # p.user_id = user_id
     end
   end
-
 
 end

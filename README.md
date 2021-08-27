@@ -11,9 +11,16 @@ This app will currently work on your local machine, but requires significant ref
 Next steps include:
 
 * Incorporate batch insertion of songs into SQL database through the ORM
-* Develop asynchronous solution so we don't have to wait for network requests to complete to move onto the next network request to substantially decrease runtime
-
+<!-- * Develop asynchronous solution so we don't have to wait for network requests to complete to move onto the next network request to substantially decrease runtime -->
+* Update User and Source Playlist to save their counts from Spotify.
+  <!-- * Use this to create an asynchronity solve that waits for playlists and songs to be populated before moving onto next step, rather than forcing delay through worst case scenario async to resolve racing condition
+    * Think on this a lil more
+    * This doesn't work because we're finding or creating songs.
+    * Just keep a counter of number of fetch calls completed and expected calls completed
+    * https://www.honeybadger.io/blog/activerecord-update-counters-race-conditions/
+    * https://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html -->
 * Abstract spotify calls
+* Refactor a buncha this and rethink placement of some methods this can be p hard to navigate esp with the chaining.
 
 ## To set up on your local machine
 
@@ -23,3 +30,19 @@ SPOTIFY_KEY=<YOUR KEY>
 SPOTIFY_SECRET=<YOUR SECRET>
 ROOT=http://localhost:3000/
 ```
+
+## Sidekiq
+
+This app requires redis to be installed and running on your computer to run in development mode.
+
+With Homebrew:
+`brew install redis`
+`brew services start redis`
+
+## Starting the App in Development Mode
+
+Start sidekiq by running:
+`bundle exec sidekiq`
+
+Start rails with:
+`rails s`

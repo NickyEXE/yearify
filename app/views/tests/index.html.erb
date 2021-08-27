@@ -1,0 +1,14 @@
+<h1>WELCOME TO THE SECRET TESTING PAGE</h1>
+<p>If you got here by accident, let me reward your curiosity by explaining this page.</p>
+<p>When you hit the button to create all your playlist, this app works in three phases:</p>
+<ul>
+  <li>Get all of your playlists from Spotify, and load them into my database.</li>
+  <li>Get all the songs from each of your playlists from Spotify, and load them into my database.</li>
+  <li>Break those songs down by year, create Spotify playlists for each year, and then store the resulting playlist information in my database so they can be deleted later if the user wishes.</li>
+</ul>
+<p>These three links below each correspond to one of those things.</p>
+<p>You won't break anything by clicking it, I hope, but it won't do what you want.</p>
+
+<%= link_to "Test Source Playlists", test_source_playlists_path %>
+<%= link_to "Test Songs", test_songs_path %>
+<%= link_to "Test Destination Playlists", test_destination_playlists_path %>
