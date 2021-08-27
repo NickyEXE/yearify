@@ -31,6 +31,7 @@ class SpotifySourcePlaylist < ApplicationRecord
   end
 
   def save_songs(res)
+    SourcePlaylist::IncrementRequestsWorker.perform_async(self.id, res["total"])
     res["items"] && res["items"].each do |item|
       track = item["track"]
       unless !track
