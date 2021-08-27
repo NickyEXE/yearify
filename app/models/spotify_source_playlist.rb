@@ -19,12 +19,6 @@ class SpotifySourcePlaylist < ApplicationRecord
   # Token-Dependent
 
   def get_songs(token)
-    # total_songs = fetch_songs(token, 0)
-    # i = 100
-    # while i < total_songs do
-    #   fetch_songs(token, i)
-    #   i = i + 100
-    # end
     SourcePlaylist::SongsWorker.perform_async(self.id, token, 0)
   end
 
@@ -67,8 +61,6 @@ class SpotifySourcePlaylist < ApplicationRecord
     total_playlists = first_playlists["total"]
     offset = 20
     while offset < total_playlists do
-      # playlists = get_by_token_and_offset(token, i)
-      # create_playlists(playlists, user)
       SourcePlaylist::ImportWorker.perform_async(token, offset, user.id)
       offset = offset + 20
     end
