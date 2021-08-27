@@ -15,7 +15,6 @@ class SpotifySourcePlaylist < ApplicationRecord
     get_songs(user.get_new_token)
   end
 
-
   # Token-Dependent
 
   def get_songs(token)
@@ -71,25 +70,11 @@ class SpotifySourcePlaylist < ApplicationRecord
     SpotifyApi.get_with_token(token, "/me/playlists?offset=#{offset}")
   end
 
-  def self.create_playlists(playlists, user)
-    return playlists["items"].map{|p| create_from_spotify(p, user)}
+  def self.create_playlists(playlists, user_id)
+    return playlists["items"].map{|p| create_from_spotify(p, user_id)}
   end
 
-  def self.create_from_spotify(spotify_playlist, user)
-    find_or_create_by(spotify_id: spotify_playlist["id"]) do |p|
-      p.name = spotify_playlist["name"]
-      p.uri = spotify_playlist["uri"]
-      p.description = spotify_playlist["description"]
-      p.tracks_url = spotify_playlist["tracks"]["href"]
-      p.user = user
-    end
-  end
-
-  def self.create_playlists_with_id(playlists, user_id)
-    return playlists["items"].map{|p| create_from_spotify_with_id(p, user_id)}
-  end
-
-  def self.create_from_spotify_with_id(spotify_playlist, user_id)
+  def self.create_from_spotify(spotify_playlist, user_id)
     find_or_create_by(spotify_id: spotify_playlist["id"]) do |p|
       p.name = spotify_playlist["name"]
       p.uri = spotify_playlist["uri"]
