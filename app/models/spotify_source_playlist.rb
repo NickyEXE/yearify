@@ -2,7 +2,6 @@ class SpotifySourcePlaylist < ApplicationRecord
   belongs_to :user
   has_many :songs
 
-
   def get_self
     SpotifyApi.get(user, "/playlists/#{spotify_id}")
   end
@@ -83,6 +82,5 @@ class SpotifySourcePlaylist < ApplicationRecord
       p.user_id = user_id
     end
   end
-
 
 end
