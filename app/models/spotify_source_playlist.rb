@@ -55,6 +55,8 @@ class SpotifySourcePlaylist < ApplicationRecord
     # then generate asynchronous requests for each subsequent set of 20 playlists.
     token = user.get_new_token
     first_playlists = get_by_token_and_offset(token, 0)
+    # you can remove this create_playlists I think?
+    # We make one extraneous request, but starting the offset at 20 below led to 20 missing playlists so something is going wrong here.
     create_playlists(first_playlists, user)
     total_playlists = first_playlists["total"]
     offset = 0
