@@ -15,6 +15,7 @@ Next steps include:
 * Update User and Source Playlist to save their counts from Spotify.
   * Use this to create an asynchronity solve that waits for playlists and songs to be populated before moving onto next step, rather than forcing delay through worst case scenario async to resolve racing condition
     * Think on this a lil more
+    * This doesn't work because we're finding or creating songs.
 * Abstract spotify calls
 * Refactor a buncha this and rethink placement of some methods this can be p hard to navigate esp with the chaining.
 
